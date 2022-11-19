@@ -85,27 +85,125 @@ def nearestOdd(n):
     return int(n)
 
 def numberOfPoolBalls(rows):
+    # 4 - 1 + 2 + 3 + 4
+    # it just sums from 1 to n
     if rows == 0:
         return 0
-    return rows + numberOfPoolBalls(rows-1)
+    return (rows * (rows + 1)) //2
 
 def numberOfPoolBallRows(balls):
-    count = 1
-    for i in range(1,balls+1):
-        if i > count:
-            count = count+1
-    return count
+    # row * (row+1) // 2 = total number of balls
+    # row**2 + row = 2 * balls
+    # row^2 + row - 2*balls = 0
+    # solving for the roots of the quadratic equation
+    # roots = (-b +(-) sqrt(b^2 - 4ac) ) / (2a)
+    #D = b^2 - 4ac
+    D = 1**2 - 4 * (1)*(-2*balls) #15
+
+    # we should not do integer division here 
+    # as the ceil function would not have a fraction part
+    root1 = math.ceil((-1 + math.sqrt(D))/(2*1))
+    root2 = math.ceil((-1 - math.sqrt(D))/(2*1))
+
+    #discard the negative root
+
+    positive_root = root1 if root1 >= 0 else root2
+
+    return positive_root
     
 
 def colorBlender(rgb1, rgb2, midpoints, n):
-    return 42
+    # n cant be negative or greater than the midpoints + 1
+    if n < 0 or n>(midpoints+1):
+        return None 
+
+    color_s_r =100*getKthDigit(rgb1,8) +  \
+        10* getKthDigit(rgb1,7) + 1*getKthDigit(rgb1,6)
+    color_s_g =100*getKthDigit(rgb1,5) +  \
+        10* getKthDigit(rgb1,4) + 1*getKthDigit(rgb1,3)
+    color_s_b =100*getKthDigit(rgb1,2) + \
+        10* getKthDigit(rgb1,1) + 1*getKthDigit(rgb1,0)
+
+
+    color_e_r =100*getKthDigit(rgb2,8) + \
+        10* getKthDigit(rgb2,7) + 1*getKthDigit(rgb2,6)
+    color_e_g =100*getKthDigit(rgb2,5) + \
+        10* getKthDigit(rgb2,4) + 1*getKthDigit(rgb2,3)
+    color_e_b =100*getKthDigit(rgb2,2) + \
+        10* getKthDigit(rgb2,1) + 1*getKthDigit(rgb2,0)
+
+    delta_r = ( color_e_r - color_s_r )/(midpoints+1)
+    delta_g = ( color_e_g - color_s_g)/(midpoints+1)
+    delta_b = ( color_e_b - color_s_b)/(midpoints+1)
+
+    result = roundHalfUp((color_s_r  + delta_r*n))*(10**6) + \
+            roundHalfUp((color_s_g  + delta_g*n))*(10**3) + \
+            roundHalfUp((color_s_b  + delta_b*n))*(10**0)
+    return result
 
 #################################################
 # Bonus/Optional
 #################################################
+def handToDice(n):
+    return getKthDigit(n,2), getKthDigit(n,1),getKthDigit(n,0)
+
+def diceToOrderedHand(n1,n2,n3):
+    max2 = max(n1,n2,n3)
+    
+    if max2 == n1:
+        max1 = max(n2,n3)
+    elif max2 == n2:
+        max1 = max(n1,n3)
+    else:
+        max1 = max(n1,n2)
+
+    max0 = n1+n2+n3 - max1  - max2
+
+    return max2*100 + max1*10 + max0
+
+def playStep2(hand, dice):
+    d1,d2,d3 = handToDice(hand)
+    if d1 != d2 or d2 != d3:
+        if d1 == d2:
+            d3 =dice%10
+            dice = dice //10
+        elif d2 == d3:
+            d1 =dice%10
+            dice = dice //10
+        elif d1 == d3:
+            d2= dice%10
+            dice=dice//10
+        else :
+            d1 = max(d1,d2,d3)
+            d2 = dice%10
+            dice = dice //10
+            d3 = dice %10
+            dice = dice//10
+
+    hand_output = diceToOrderedHand(d1,d2,d3)
+
+    return hand_output, dice
+
+def score(hand):
+    d1,d2,d3 = handToDice(hand)
+    if d1 == d2 and d2 == d3:
+        score = 20 + d1*3
+    elif d1 == d2:
+        score = 10 + d1*2
+    elif d2 == d3:
+        score = 10 + d2*2
+    elif d1 == d3:
+        score = 10 + d1*2
+    else :
+        score = max (d1,d2,d3)
+    return score
 
 def bonusPlayThreeDiceYahtzee(dice):
-    return 42
+    
+    hand1_outcome,out_dice  = playStep2(dice % 1000, dice // 1000)
+    hand2_outcome,out_dice = playStep2(hand1_outcome, out_dice)
+
+    return hand2_outcome,score(hand2_outcome)
 
 #################################################
 # Test Functions
@@ -289,7 +387,7 @@ def testAll():
     testNumberOfPoolBallRows()
     testColorBlender()
     # Bonus:
-    # testBonusPlayThreeDiceYahtzee()
+    testBonusPlayThreeDiceYahtzee()
 
 def main():
     cs112_f22_week1_linter.lint()

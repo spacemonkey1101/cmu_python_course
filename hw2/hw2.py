@@ -55,19 +55,111 @@ def hasConsecutiveDigits(n):
     return False
 
 def isPalindromicNumber(n):
-    return 42
+    size = digitCount(n)
+    i=0
+    while size > 1 and i <= size//2:
+        start_digit = n // (10**(size-i-1))
+        n = n % (10**(size-i-1))
+        end_digit = n % 10
+        n = n // 10
+        i = i+2
+        if start_digit  != end_digit:
+            return False
+    return True
+
+
+#helper function for nthPalindromicPrime
+def isPrime(n):
+    for i in range(2, n-1):
+        if n%i == 0:
+            return False
+    return True
 
 def nthPalindromicPrime(n):
-    return 42
+    cnt = 0
+    res = 0
+    i = 2
+    while True:
+        
+        if isPrime(i) and isPalindromicNumber(i):
+            if cnt == n:
+                return i
+        
+            cnt = cnt + 1
+
+        i = i + 1
+
+def getKthDigit(n, k):
+    n = abs(n)
+    n = n // (10**k)
+
+    return n%10
 
 def mostFrequentDigit(n):
-    return 42
+    n = abs(n)
+    second_frequency =0
+    max_frequency = 0
+    
+    most_frequent_digit = getKthDigit(n,0) # 3 
+
+    second_frequent_digit = getKthDigit(n,1) #3
+    
+    flag = True
+
+    # 12233
+    while n > 0:
+        current_digit = n%10 # 3 3 2 
+
+        if current_digit == most_frequent_digit:
+            max_frequency+=1 # 2
+        elif current_digit == second_frequent_digit:
+            second_frequency+=1 # 1
+        else :
+            if flag:
+                second_frequent_digit = current_digit
+                flag = False
+            second_frequency+=1
+
+        print(locals())
+        
+        if second_frequency > max_frequency:
+            temp_frequency = max_frequency # 2
+            temp_digit = most_frequent_digit
+
+            max_frequency = second_frequency # 3
+            most_frequent_digit = second_frequent_digit
+
+            second_frequent_digit = temp_digit # 2
+            second_frequency = temp_frequency
+
+        n = n //10
+    
+
+    if second_frequency == max_frequency:
+        print("Inside if condition", \
+            min(most_frequent_digit, second_frequent_digit))
+        
+        return min(most_frequent_digit, second_frequent_digit)
+        
+    print("Outside file", most_frequent_digit)
+    return most_frequent_digit
 
 def findZeroWithBisection(f, x0, x1, epsilon):
     return 42
 
 def carrylessAdd(x, y):
-    return 42
+    maximum = max(x,y)
+    power = 1
+    result = 0
+    while maximum > 0 :
+        digit_sum = x%10 + y%10
+        extracted_digit = digit_sum%10
+        result += power*extracted_digit
+        power = power * 10
+        maximum //= 10
+        x //= 10
+        y //= 10
+    return result
 
 def longestDigitRun(n):
     return 42
@@ -409,8 +501,8 @@ def testAll():
     testHasConsecutiveDigits()
     testIsPalindromicNumber()
     testNthPalindromicPrime()   
-    testMostFrequentDigit()
-    testFindZeroWithBisection()
+    # testMostFrequentDigit()
+    # testFindZeroWithBisection()
     testCarrylessAdd()
     testLongestDigitRun()
     testPlayPig()
