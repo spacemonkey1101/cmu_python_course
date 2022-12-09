@@ -1,7 +1,6 @@
 #################################################
 # hw2.py
-# name:
-# andrew id:
+# name: Ritam
 #################################################
 
 import cs112_f22_week2_linter
@@ -145,7 +144,17 @@ def mostFrequentDigit(n):
     return most_frequent_digit
 
 def findZeroWithBisection(f, x0, x1, epsilon):
-    return 42
+    if (x0<0 and x1<0) :
+        return  None
+    while x0 < x1:
+        mid = (x0 + x1) /2
+        if almostEqual(f(mid),0,epsilon) :
+            return mid
+        elif f(mid)*f(x0) > 0:
+            x0=mid
+        else:
+            x1=mid
+    return -1
 
 def carrylessAdd(x, y):
     maximum = max(x,y)
@@ -502,7 +511,7 @@ def testAll():
     testIsPalindromicNumber()
     testNthPalindromicPrime()   
     # testMostFrequentDigit()
-    # testFindZeroWithBisection()
+    testFindZeroWithBisection()
     testCarrylessAdd()
     testLongestDigitRun()
     testPlayPig()
