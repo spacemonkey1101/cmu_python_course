@@ -170,8 +170,33 @@ def carrylessAdd(x, y):
         y //= 10
     return result
 
+
 def longestDigitRun(n):
-    return 42
+    n = abs(n)
+    previous_digit = n%10 # 6
+    n = n //10  # 6 7 7 8 8
+    
+    current_counter = 1
+    max_counter = 1
+    max_digit = previous_digit # 6
+
+    while n>0:
+        current_digit = n%10 # 7
+        if previous_digit == current_digit:
+            current_counter+=1 
+            if current_counter >= max_counter:
+                if current_counter == max_counter:
+                    max_digit = min(max_digit,current_digit)
+                else:
+                    max_digit = current_digit  
+                max_counter = current_counter 
+        else:
+            current_counter=1 
+            previous_digit = current_digit 
+                
+        n=n//10  
+
+    return max_digit
 
 def playPig():
     return 42
