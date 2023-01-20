@@ -94,55 +94,28 @@ def getKthDigit(n, k):
 
     return n%10
 
-def mostFrequentDigit(n):
-    n = abs(n)
-    second_frequency =0
-    max_frequency = 0
-    
-    most_frequent_digit = getKthDigit(n,0) # 3 
-
-    second_frequent_digit = getKthDigit(n,1) #3
-    
-    flag = True
-
-    # 12233
+def countOccurences(digit, n):
+    count = 0
     while n > 0:
-        current_digit = n%10 # 3 3 2 
+        currDigit = n%10
+        if currDigit == digit:
+            count += 1
+        n //= 10
+    return count
 
-        if current_digit == most_frequent_digit:
-            max_frequency+=1 # 2
-        elif current_digit == second_frequent_digit:
-            second_frequency+=1 # 1
-        else :
-            if flag:
-                second_frequent_digit = current_digit
-                flag = False
-            second_frequency+=1
+def mostFrequentDigit(n):
+    maxFreq = 0
+    maxDigit = 0
+    n = abs(n)
+    #O(10)*O(logn)
+    for i in range(10):
+        occur = countOccurences(i, n)
+        if occur > maxFreq:
+            maxFreq = occur
+            maxDigit = i
+    return maxDigit
 
-        print(locals())
-        
-        if second_frequency > max_frequency:
-            temp_frequency = max_frequency # 2
-            temp_digit = most_frequent_digit
-
-            max_frequency = second_frequency # 3
-            most_frequent_digit = second_frequent_digit
-
-            second_frequent_digit = temp_digit # 2
-            second_frequency = temp_frequency
-
-        n = n //10
     
-
-    if second_frequency == max_frequency:
-        print("Inside if condition", \
-            min(most_frequent_digit, second_frequent_digit))
-        
-        return min(most_frequent_digit, second_frequent_digit)
-        
-    print("Outside file", most_frequent_digit)
-    return most_frequent_digit
-
 def findZeroWithBisection(f, x0, x1, epsilon):
     if (x0<0 and x1<0) :
         return  None
@@ -535,7 +508,7 @@ def testAll():
     testHasConsecutiveDigits()
     testIsPalindromicNumber()
     testNthPalindromicPrime()   
-    # testMostFrequentDigit()
+    testMostFrequentDigit()
     testFindZeroWithBisection()
     testCarrylessAdd()
     testLongestDigitRun()
