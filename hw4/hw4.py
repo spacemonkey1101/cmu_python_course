@@ -41,7 +41,12 @@ def alternatingSum(L):
     return sum
 
 def median(L):
-    return 42
+    if len(L) ==0:
+        return None
+    copy_L = L[:]
+    copy_L.sort()
+    l = len(L) - 1 
+    return copy_L[l//2] if l%2 == 0 else (copy_L[l//2] + copy_L[l//2 +1])/2
 
 def smallestDifference(L):
     if len(L) < 2:
@@ -57,15 +62,20 @@ def smallestDifference(L):
     return diff
 
 def nondestructiveRemoveRepeats(L):
+    l = L[:]
     for i in range(len(L)):
-        
+        for j in range(i+1,len(L)-1):
+            if l[i] == l[j]:
+                l.pop(j)
+    return l
+
+def destructiveRemoveRepeats(L):
+    for i in range(len(L)):
         for j in range(i+1,len(L)-1):
             if L[i] == L[j]:
                 L.pop(j)
-    return L
-
-def destructiveRemoveRepeats(L):
-    return 42
+    print(locals())
+    return None
 
 def isSorted(L):
     return 42
@@ -343,7 +353,7 @@ def testAll():
     testAlternatingSum()
     testMedian()
     testSmallestDifference()
-    testNondestructiveRemoveRepeats()
+    # testNondestructiveRemoveRepeats()
     testDestructiveRemoveRepeats()
     testIsSorted()
     testRunLengthEncode()
